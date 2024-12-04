@@ -1,35 +1,70 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { Button, Form, ImageUploader, Input } from 'antd-mobile'
+import classNames from 'classnames';
+import { UPDATE } from './graphql/demo'
+import { useMutation, } from '@apollo/client'
+import { useEffect } from 'react'
+import { useUploadOSS } from './hooks/useUploadOSS'
 
-function App() {
-  const [count, setCount] = useState(0)
+import styles from './App.module.less'
+const App = () => {
+  const uploadHandler = useUploadOSS();
 
-  return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+  // const { loading, data } = useQuery(FIND, {
+  //   variables: {
+  //     id: '194add8d-0ab4-40ce-b50a-376fec919d16'
+  //   }
+  // })
+
+  const [update] = useMutation(UPDATE);
+  useEffect(() => {
+    document.documentElement.setAttribute(
+      'data-prefers-color-scheme',
+      'dark'
+    )
+  }, [])
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const onClickHandler = (v: any) => {
+    update({
+      variables: {
+        id: '194add8d-0ab4-40ce-b50a-376fec919d16',
+        params: {
+          ...v
+        }
+      }
+    })
+  }
+
+  return (<div className={styles.container}>
+    <Form
+      className={classNames(styles.form, styles.formPadding)}
+      layout='horizontal'
+      onFinish={onClickHandler}
+      footer={
+        <Button block type='submit' color='primary' size='large'>
+          提交
+        </Button>
+      }
+    >
+      <Form.Item
+        name='name'
+        label='姓名'
+      >
+        <Input />
+      </Form.Item>
+      <Form.Item
+        name="desc"
+        label="描述"
+      >
+        <Input />
+      </Form.Item>
+      <Form.Item
+        name="actor"
+        label="头像"
+      >
+        <ImageUploader upload={uploadHandler} />
+      </Form.Item>
+    </Form>
+  </div>)
 }
 
 export default App
