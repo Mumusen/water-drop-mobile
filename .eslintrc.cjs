@@ -21,12 +21,13 @@ module.exports = {
     },
     'import/resolver': {
       'alias': {
+        'map': [
+          [
+            '@', './src'
+          ]
+        ],
         'extensions': ['.ts', '.tsx']
       }
     }
-  },
-  ignoresPatterns: [
-    "eslintrc.cjs",
-    "vite.config.ts"
-  ]
+  }
 }
